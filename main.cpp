@@ -4,13 +4,14 @@
 
 using namespace std;
 
-void add(Node* node, int num);
+void add(Node* &node, Node* &parent, int num);
 
 int main(){
 
   char input[100];
   bool stillgoing = true;
   Node* head = NULL;
+  Node* child = NULL;
   int x;
   
   cout << "Welcome to Red Black Tree!" << endl;
@@ -27,7 +28,7 @@ int main(){
 
       cin >> x;
       
-      add(head, x); // work on add
+      add(head, child, x); // work on add
       
     }
 
@@ -51,5 +52,44 @@ int main(){
     }
 
   }
+
+}
+
+void add(Node* &parent, Node* &node, int num){
+
+  if (node == NULL){
+
+    Node* temp = new Node();
+    
+    if (parent == NULL){
+      temp->data = num;
+      return;
+    }
+    else{
+
+      temp->data = num;
+      temp->parent = parent;
+      return;
+      
+    }
+
+  }
+
+  else {
+
+    if (num > node->data){
+
+      add(node, node->right, num);
+
+    }
+    else{
+
+      add(node, node->left, num);
+
+    }
+
+  }
+  // add done?
+  
 
 }
