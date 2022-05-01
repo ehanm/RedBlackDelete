@@ -5,6 +5,8 @@
 using namespace std;
 
 void add(Node* &node, Node* &parent, int num);
+void print(Node* node, int depth);
+bool check(Node* node);
 
 int main(){
 
@@ -28,7 +30,7 @@ int main(){
 
       cin >> x;
       
-      add(head, child, x); // work on add
+      add(child, head, x); // work on add
       
     }
 
@@ -40,7 +42,7 @@ int main(){
     
     if (strcmp(input, "PRINT") == 0){
 
-      cout << "print function" << endl;
+      print(head, 0);
       
     }
     
@@ -62,13 +64,36 @@ void add(Node* &parent, Node* &node, int num){
     Node* temp = new Node();
     
     if (parent == NULL){
+      temp->isred = false;
       temp->data = num;
+      node = temp;
       return;
     }
     else{
 
       temp->data = num;
       temp->parent = parent;
+      node = temp;
+
+      if (check(node) == true){
+
+	// cases start
+
+	cout << "oopsie" << endl;
+
+
+
+
+
+	
+      }
+
+      else {
+
+	cout << "no oopsie" << endl;
+
+      }
+      
       return;
       
     }
@@ -91,5 +116,77 @@ void add(Node* &parent, Node* &node, int num){
   }
   // add done?
   
+
+}
+
+void print(Node* node, int depth){
+
+   if (node == NULL){
+
+    cout << "tree is empty!" << endl;
+    return;
+    
+  }
+  
+  if (node->right != NULL){
+
+    print(node->right, depth + 1);
+    
+  }
+
+  for (int i = 0; i < depth; i++){
+
+    cout << "\t";
+    
+  }
+
+  if (node->isred == false){
+
+    cout << "B " << endl;
+
+  }
+  else{
+
+    cout << "R " << endl;
+
+  }
+
+  for (int i = 0; i < depth; i++){
+
+    cout << "\t";
+
+  }
+
+  
+  cout << node->data << endl;
+
+  if (node->left != NULL){
+
+    print(node->left, depth + 1);
+
+  }
+
+
+  
+}
+
+bool check(Node* node){
+
+  if (node->parent->isred == true){
+
+    if (node->isred == true){
+
+      return true;
+
+    }
+
+  }
+
+  else {
+
+    return false;
+
+  }
+       
 
 }

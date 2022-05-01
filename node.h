@@ -6,7 +6,7 @@ using namespace std;
 struct Node {
 
   int data;
-  bool isblack = true;
+  bool isred = true;
   
   Node* parent;
   Node* right = NULL;
