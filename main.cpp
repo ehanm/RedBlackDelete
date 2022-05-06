@@ -7,6 +7,8 @@ using namespace std;
 void add(Node* &node, Node* &parent, int num);
 void print(Node* node, int depth);
 bool check(Node* node);
+void fixer(Node* &node);
+
 
 int main(){
 
@@ -79,13 +81,8 @@ void add(Node* &parent, Node* &node, int num){
 
 	// cases start
 
-	cout << "oopsie" << endl;
+	fixer(node);
 
-
-
-
-
-	
       }
 
       else {
@@ -114,7 +111,6 @@ void add(Node* &parent, Node* &node, int num){
     }
 
   }
-  // add done?
   
 
 }
@@ -188,5 +184,111 @@ bool check(Node* node){
 
   }
        
+
+}
+
+void fixer(Node* &node){
+
+  Node* uncle;
+  
+  if (node->parent == NULL){
+
+    node->isred = false;
+    return;
+    
+  }
+  
+  Node* grandpa = node->parent->parent;
+
+  if(node->parent == grandpa->right){
+  
+    uncle = grandpa->left;
+
+  }
+  else{
+
+    uncle = grandpa->right;
+    
+  }
+
+  // case 4
+  
+  if (uncle == NULL){
+
+    Node* first = node;
+    Node* second = node->parent;
+    Node* third = grandpa;
+
+    Node* newnode = new Node(); 
+
+    cout << "gets here" << endl;
+    
+    if (node->parent == grandpa->left){
+
+      if (node->data > node->parent->data){
+	
+	grandpa->right = newnode;
+	newnode->data = third->data;
+	third->data = first->data;
+	node = NULL;
+	return;
+	
+      }
+      else {
+
+	grandpa->right = newnode;
+	newnode->data = third->data;
+	third->data = second->data;
+	second->data = first->data;
+	node = NULL;
+	return;
+
+      }
+      
+    }
+    else {
+
+      if (node->data > node->parent->data){
+
+	grandpa->left = newnode;
+	newnode->data = third->data;
+	third->data = second->data;
+	second->data = first->data;
+	node = NULL;
+	return;
+
+      }
+      else{
+
+	grandpa->left = newnode;
+	newnode->data = third->data;
+	third->data = first->data;
+	node = NULL;
+	return;
+	
+
+      }
+
+
+    }
+    
+  }
+
+  // case 3
+  
+  if (uncle->isred == true && node->parent->isred == true){
+  
+    node->parent->isred = false;
+  
+    if (uncle->isred == true){
+
+      uncle->isred = false;
+
+    }
+
+    fixer(grandpa);
+
+  }
+
 
 }
