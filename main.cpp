@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include "node.h"
+#include <fstream>
 
 using namespace std;
 
@@ -8,7 +9,7 @@ void add(Node* &node, Node* &parent, Node* &head, int num);
 void print(Node* node, int depth);
 bool check(Node* node);
 void fixer(Node* &node, Node* &head);
-
+ 
 
 int main(){
 
@@ -32,23 +33,44 @@ int main(){
 
       cin >> x;
       
-      add(child, head, head, x); // work on add
+      add(child, head, head, x); // add
       
     }
 
-    if (strcmp(input, "READ") == 0){
+    if (strcmp(input, "READ") == 0){ // reads in file and inputs it
 
-      cout << "read function" << endl;
+      char numberfile[1000];
+      
+      cout << "What is the name of the file?" << endl;
+
+      cin >> numberfile;
+
+      ifstream input_file(numberfile);
+
+      if (!input_file.is_open()){
+
+	cout << "could not open this file" << endl;
+
+      }
+      while (!input_file.eof()) {
+
+	int num;
+	input_file >> num;
+	add(child, head, head, num);
+	
+      }
+
+      input_file.close();
       
     }
     
-    if (strcmp(input, "PRINT") == 0){
+    if (strcmp(input, "PRINT") == 0){ // prints
 
       print(head, 0);
       
     }
     
-    if (strcmp(input, "QUIT") == 0){
+    if (strcmp(input, "QUIT") == 0){ // quits
 
       stillgoing = false;
       break;
@@ -59,7 +81,7 @@ int main(){
 
 }
 
-void add(Node* &parent, Node* &node, Node* &head, int num){
+void add(Node* &parent, Node* &node, Node* &head, int num){ // similar to bst but with colors as well
 
   if (node == NULL){
 
@@ -109,7 +131,7 @@ void add(Node* &parent, Node* &node, Node* &head, int num){
 
 }
 
-void print(Node* node, int depth){
+void print(Node* node, int depth){ // same print system as bst, but uses B and R as color indicators
 
    if (node == NULL){
 
@@ -160,7 +182,7 @@ void print(Node* node, int depth){
   
 }
 
-bool check(Node* node){
+bool check(Node* node){ // checks if parent and node are both red or not
 
   if (node->parent == NULL){
 
@@ -183,17 +205,17 @@ bool check(Node* node){
     return false;
 
   }
+
+  return false;
        
 
 }
 
-void fixer(Node* &node, Node* &head){
+void fixer(Node* &node, Node* &head){ // balances and fixes issues if check() runs true
   
   Node* uncle;
   
   if (node->parent == NULL){
-
-    cout << "gets here" << endl;
 
     node->isred = false;
     return;
