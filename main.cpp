@@ -4,10 +4,10 @@
 
 using namespace std;
 
-void add(Node* &node, Node* &parent, int num);
+void add(Node* &node, Node* &parent, Node* &head, int num);
 void print(Node* node, int depth);
 bool check(Node* node);
-void fixer(Node* &node);
+void fixer(Node* &node, Node* &head);
 
 
 int main(){
@@ -32,7 +32,7 @@ int main(){
 
       cin >> x;
       
-      add(child, head, x); // work on add
+      add(child, head, head, x); // work on add
       
     }
 
@@ -59,7 +59,7 @@ int main(){
 
 }
 
-void add(Node* &parent, Node* &node, int num){
+void add(Node* &parent, Node* &node, Node* &head, int num){
 
   if (node == NULL){
 
@@ -81,13 +81,7 @@ void add(Node* &parent, Node* &node, int num){
 
 	// cases start
 
-	fixer(node);
-
-      }
-
-      else {
-
-	cout << "no oopsie" << endl;
+	fixer(node, head);
 
       }
       
@@ -101,12 +95,12 @@ void add(Node* &parent, Node* &node, int num){
 
     if (num > node->data){
 
-      add(node, node->right, num);
+      add(node, node->right, head, num);
 
     }
     else{
 
-      add(node, node->left, num);
+      add(node, node->left, head, num);
 
     }
 
@@ -168,6 +162,12 @@ void print(Node* node, int depth){
 
 bool check(Node* node){
 
+  if (node->parent == NULL){
+
+    return true;
+
+  }
+  
   if (node->parent->isred == true){
 
     if (node->isred == true){
@@ -187,11 +187,13 @@ bool check(Node* node){
 
 }
 
-void fixer(Node* &node){
-
+void fixer(Node* &node, Node* &head){
+  
   Node* uncle;
   
   if (node->parent == NULL){
+
+    cout << "gets here" << endl;
 
     node->isred = false;
     return;
@@ -199,8 +201,8 @@ void fixer(Node* &node){
   }
   
   Node* grandpa = node->parent->parent;
-
-  if(node->parent == grandpa->right){
+  
+  if (node->parent == grandpa->right){
   
     uncle = grandpa->left;
 
@@ -214,20 +216,19 @@ void fixer(Node* &node){
   // case 4
   
   if (uncle == NULL){
-
+    
     Node* first = node;
     Node* second = node->parent;
     Node* third = grandpa;
 
     Node* newnode = new Node(); 
-
-    cout << "gets here" << endl;
     
     if (node->parent == grandpa->left){
 
       if (node->data > node->parent->data){
 	
 	grandpa->right = newnode;
+	newnode->parent = grandpa;
 	newnode->data = third->data;
 	third->data = first->data;
 	node = NULL;
@@ -237,6 +238,7 @@ void fixer(Node* &node){
       else {
 
 	grandpa->right = newnode;
+	newnode->parent = grandpa;
 	newnode->data = third->data;
 	third->data = second->data;
 	second->data = first->data;
@@ -251,6 +253,7 @@ void fixer(Node* &node){
       if (node->data > node->parent->data){
 
 	grandpa->left = newnode;
+	newnode->parent = grandpa;
 	newnode->data = third->data;
 	third->data = second->data;
 	second->data = first->data;
@@ -261,6 +264,7 @@ void fixer(Node* &node){
       else{
 
 	grandpa->left = newnode;
+	newnode->parent = grandpa;
 	newnode->data = third->data;
 	third->data = first->data;
 	node = NULL;
@@ -276,7 +280,7 @@ void fixer(Node* &node){
 
   // case 3
   
-  if (uncle->isred == true && node->parent->isred == true){
+  else if (uncle->isred == true && node->parent->isred == true){
   
     node->parent->isred = false;
   
@@ -286,7 +290,98 @@ void fixer(Node* &node){
 
     }
 
-    fixer(grandpa);
+    cout << "gets here" << endl;
+
+    grandpa->isred = true;
+
+    if (check(grandpa) == true){
+
+      fixer(grandpa, head);
+
+    }
+
+  }
+
+  // case 5
+  
+  else if (uncle != NULL && uncle->isred != true && node->parent->isred == true){
+    
+    if (node->parent->data > grandpa->data){
+      if (node->data > node->parent->data){
+
+	node->parent->left->parent = grandpa;
+	grandpa->right = node->parent->left;
+	grandpa->parent = node->parent;
+	node->parent->parent = NULL;
+	node->parent->left = grandpa;
+
+	head = node->parent;
+	node->parent->isred = false;
+	node->parent->left->isred = true;
+	node->parent->right->isred = true;
+	return;
+
+      }
+    
+
+      else if (node->data < node->parent->data){
+
+	node->parent->left = node->right;
+	node->parent->parent = node;
+	node->right = node->parent;
+	grandpa->right = node->left;
+	grandpa->parent = node;
+	node->left = grandpa;
+	node->parent = NULL;
+	head = node;
+
+	node->left->isred = true;
+	node->right->isred = true;
+	node->isred = false;
+	return;
+
+      }
+
+    }
+
+    else {
+
+      if (node->data < node->parent->data){
+
+	grandpa->parent = node->parent;
+	grandpa->left = node->parent->right;
+	node->parent->right = grandpa;
+	node->parent->parent = NULL;
+	head = node->parent;
+
+	node->parent->isred = false;
+	node->parent->left->isred = true;
+	node->parent->right->isred = true;
+	return;
+
+      }
+
+      else if (node->data > node->parent->data){
+
+	node->parent->right = node->left;
+	node->left = node->parent;
+	node->parent->parent = node;
+	grandpa->left = node->right;
+	node->right->parent = grandpa;
+	grandpa->parent = node;
+	node->right = grandpa;
+
+	head = node;
+	node->isred = false;
+	node->left->isred = true;
+	node->right->isred = true;
+	return;
+
+
+      }
+
+
+    }
 
   }
 
