@@ -1,3 +1,8 @@
+// Red Black Tree
+// An auto-balancing binary tree, using specific rules and colors to balance
+// completed by Ehan Masud
+// with help from Nathan Zou and the resource page provided on canvas
+
 #include <iostream>
 #include <cstring>
 #include "node.h"
