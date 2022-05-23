@@ -14,7 +14,8 @@ void add(Node* &node, Node* &parent, Node* &head, int num);
 void print(Node* node, int depth);
 bool check(Node* node);
 void fixer(Node* &node, Node* &head);
- 
+void deleter(int num, Node* &child, Node* &parent);
+
 
 int main(){
 
@@ -28,7 +29,7 @@ int main(){
 
   while (stillgoing == true){
     
-    cout << "What would you like to do? (ADD, READ, PRINT, QUIT)" << endl;
+    cout << "What would you like to do? (ADD, READ, PRINT, DELETE, QUIT)" << endl;
     
     cin >> input;
 
@@ -66,6 +67,17 @@ int main(){
       }
 
       input_file.close();
+      
+    }
+
+    if (strcmp(input, "DELETE") == 0){
+
+      int p;
+      cout << "What would you like to delete?" << endl;
+
+      cin >> p;
+
+      deleter(p, head, head->parent);
       
     }
     
@@ -317,8 +329,6 @@ void fixer(Node* &node, Node* &head){ // balances and fixes issues if check() ru
 
     }
 
-    cout << "gets here" << endl;
-
     grandpa->isred = true;
 
     if (check(grandpa) == true){
@@ -409,6 +419,65 @@ void fixer(Node* &node, Node* &head){ // balances and fixes issues if check() ru
 
 
     }
+
+  }
+
+
+}
+
+void deleter(int num, Node* &child, Node* &parent){
+
+  if (child == NULL){
+
+    cout << "no number to delete!" << endl;
+    return;
+
+  }
+  
+  if (child->data < num){
+
+    deleter(num, child->right, child);
+
+  }
+
+  else if (child->data > num){
+
+    deleter(num, child->left, child);
+
+  }
+
+  else if (child->data == num) {
+
+    //case 0:
+
+    if (parent == NULL){
+
+      child = NULL;
+      return;
+
+    }
+    
+    //case 1:
+
+    if (child == parent->left){
+
+      parent->left = NULL;
+      return;
+      
+    }
+
+    if (child == parent->right){
+
+      parent->right = NULL;
+      return;
+      
+    }
+
+  }
+
+  else {
+
+    cout << "no number to delete!" << endl;
 
   }
 
