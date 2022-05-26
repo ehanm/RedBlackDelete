@@ -481,9 +481,31 @@ void deleter(int num, Node* &child, Node* &parent){
 	  else {
 	    temp->parent->right = NULL;
 	  }
-	  temp = NULL;
-	  return;
+	  temp = temp->left;
+	  
+	  if (child->left == NULL && child->right->isred == false){
 
+	    Node* newnode = new Node();
+
+	    child->left = newnode;
+	    
+	    child->left->data = child->data;
+	    child->left->parent = child;
+	    child->data = child->right->data;
+	    child->left->right = child->right->left;
+	    child->right->left = NULL;
+	    child->right = child->right->right;
+
+	    child->left->isred = false;
+	    child->right->isred = false;
+	    
+	    return;
+
+	  }
+
+	  else {
+	    return;
+	  }
 	}
 
 	else {
@@ -508,7 +530,7 @@ void deleter(int num, Node* &child, Node* &parent){
 	  else {
 	    temp->parent->left = NULL;
 	  }
-	  temp = NULL;
+	  temp = temp->right;
 	  return;
 
 	}
@@ -526,14 +548,30 @@ void deleter(int num, Node* &child, Node* &parent){
       
     }
 
-    if (child == parent->right){
+    else if (child == parent->right){
 
       parent->right = NULL;
       return;
       
     }
 
+    
+
+    else if (child->isred == false && parent->isred == false){
+
+      // case 2
+
+    }
+
+    else {
+
+
+    }
+
+    
+
   }
+  
 
   else {
 
