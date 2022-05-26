@@ -448,16 +448,76 @@ void deleter(int num, Node* &child, Node* &parent){
 
   else if (child->data == num) {
 
-    //case 0:
+    //case 0: // delete head
 
     if (parent == NULL){
 
-      child = NULL;
-      return;
+      if (child->left == NULL && child->right == NULL){
+	child = NULL;
+	return;
+      }
+
+      else {
+
+	if (child->left != NULL){
+
+	  Node* temp;
+	  Node* temp2;
+
+	  temp = child->left;
+	  temp2 = child->left->right;
+	  
+	  while (temp2 != NULL){
+
+	    temp = temp2;
+	    temp2 = temp2->right;
+	    
+	  }
+
+	  child->data = temp->data;
+	  if (temp->parent->parent == NULL){
+	    temp->parent->left = NULL;
+	  }
+	  else {
+	    temp->parent->right = NULL;
+	  }
+	  temp = NULL;
+	  return;
+
+	}
+
+	else {
+
+	  Node* temp;
+	  Node* temp2;
+
+	  temp = child->right;
+	  temp2 = child->right->left;
+
+	  while (temp2 != NULL){
+
+	    temp = temp2;
+	    temp2 = temp2->left;
+
+	  }
+
+	  child->data = temp->data;
+	  if (temp->parent->parent == NULL){
+	    temp->parent->right = NULL;
+	  }
+	  else {
+	    temp->parent->left = NULL;
+	  }
+	  temp = NULL;
+	  return;
+
+	}
+
+      }
 
     }
     
-    //case 1:
+    //case 1: leaf
 
     if (child == parent->left){
 
