@@ -475,31 +475,43 @@ void deleter(int num, Node* &child, Node* &parent){
 	  }
 
 	  child->data = temp->data;
+	  
 	  if (temp->parent->parent == NULL){
-	    temp->parent->left = NULL;
-	  }
+	    child->left = child->left->left;
+	    if (child->left != NULL){
+	      child->left->isred = false;
+	      child->left->parent = child;
+	      return;
+	    }	   	    
+      	  }
 	  else {
 	    temp->parent->right = NULL;
 	  }
-	  temp = temp->left;
 	  
 	  if (child->left == NULL && child->right->isred == false){
+	    if (child->right->right != NULL){
+	      Node* newnode = new Node();
 
-	    Node* newnode = new Node();
-
-	    child->left = newnode;
+	      child->left = newnode;
 	    
-	    child->left->data = child->data;
-	    child->left->parent = child;
-	    child->data = child->right->data;
-	    child->left->right = child->right->left;
-	    child->right->left = NULL;
-	    child->right = child->right->right;
+	      child->left->data = child->data;
+	      child->left->parent = child;
+	      child->data = child->right->data;
+	      child->left->right = child->right->left;
+	      child->right->left = NULL;
+	      child->right = child->right->right;
 
-	    child->left->isred = false;
-	    child->right->isred = false;
+	      child->left->isred = false;
+	      child->right->isred = false;
 	    
-	    return;
+	      return;
+	    }
+	    else {
+
+	      child->right->isred = true;
+	      return;
+
+	    }
 
 	  }
 
@@ -524,13 +536,13 @@ void deleter(int num, Node* &child, Node* &parent){
 	  }
 
 	  child->data = temp->data;
+	  
 	  if (temp->parent->parent == NULL){
-	    temp->parent->right = NULL;
+	    child->right = child->right->right;
 	  }
 	  else {
 	    temp->parent->left = NULL;
 	  }
-	  temp = temp->right;
 	  return;
 
 	}
