@@ -448,7 +448,7 @@ void deleter(int num, Node* &child, Node* &parent){
 
   else if (child->data == num) {
 
-    //case 0: // delete head
+    //case: head
 
     if (parent == NULL){
 
@@ -550,17 +550,26 @@ void deleter(int num, Node* &child, Node* &parent){
       }
 
     }
-    
-    //case 1: leaf
 
-    if (child == parent->left){
+    // case: black middle
+    
+    else if (child->isred == false && parent != NULL && child->left != NULL) {
+
+      child->data = child->left->data;
+      child->left = NULL; 
+      
+    }
+    
+    //case: leaf
+
+    else if (child == parent->left && child->left == NULL && child->right == NULL){
 
       parent->left = NULL;
       return;
       
     }
 
-    else if (child == parent->right){
+    else if (child == parent->right && child->left == NULL && child->right == NULL){
 
       parent->right = NULL;
       return;
@@ -572,11 +581,6 @@ void deleter(int num, Node* &child, Node* &parent){
     else if (child->isred == false && parent->isred == false){
 
       // case 2
-
-    }
-
-    else {
-
 
     }
 
