@@ -606,8 +606,17 @@ void deleter(int num, Node* &child, Node* &parent){
 	}
 	
 	child->data = temp->data;
-	
-	child->left = child->left->left;
+
+	if (temp != child->left){
+
+	  temp->parent->right = NULL;
+	  
+	}
+	else {
+
+	  child->left = child->left->left;
+
+	}
 	
 	if (child->left != NULL){
 	  
@@ -631,7 +640,6 @@ void deleter(int num, Node* &child, Node* &parent){
 	    child->left->right = child->right->left;
 	    child->right->left = NULL;
 	    child->right = child->right->right;
-	    // small fixes left around here
 	    child->left->isred = false;
 	    child->right->isred = false;
 	    child->isred = false;
