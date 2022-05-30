@@ -338,7 +338,7 @@ void fixer(Node* &node, Node* &head){ // balances and fixes issues if check() ru
     }
 
   }
-
+  
   // case 5
   
   else if (uncle != NULL && uncle->isred != true && node->parent->isred == true){
@@ -380,7 +380,7 @@ void fixer(Node* &node, Node* &head){ // balances and fixes issues if check() ru
       }
 
     }
-
+    
     else {
 
       if (node->data < node->parent->data){
@@ -554,11 +554,21 @@ void deleter(int num, Node* &child, Node* &parent){
     // case: black middle
     
     else if (child->isred == false && parent != NULL && child->left != NULL) {
-
+      
       child->data = child->left->data;
       child->left = NULL; 
+      return;
       
     }
+    
+    else if (child->isred == false && parent != NULL && child->left == NULL && child->right != NULL){
+
+      child->data = child->right->data;
+      child->right = NULL;
+      return;
+
+    }
+    
     
     //case: leaf
 
@@ -576,24 +586,84 @@ void deleter(int num, Node* &child, Node* &parent){
       
     }
 
-    
+    else if (child->isred == true && parent->isred == false){
+      
+      // case: red middle
+      
+      if (child->left != NULL){
+	
+	Node* temp;
+	Node* temp2;
+	
+	temp = child->left;
+	temp2 = child->left->right;
+	
+	while (temp2 != NULL){
+	  
+	  temp = temp2;
+	  temp2 = temp2->right;
+	  
+	}
+	
+	child->data = temp->data;
+	
+	child->left = child->left->left;
+	
+	if (child->left != NULL){
+	  
+	  child->left->isred = false;
+	  child->left->parent = child;
+	  return;
+	  
+	}
+	
+        
+	if (child->left == NULL && child->right->isred == false){
+	  if (child->right->right != NULL){
 
-    else if (child->isred == false && parent->isred == false){
+	    Node* newnode = new Node();
+	    
+	    child->left = newnode;
+	    
+	    child->left->data = child->data;
+	    child->left->parent = child;
+	    child->data = child->right->data;
+	    child->left->right = child->right->left;
+	    child->right->left = NULL;
+	    child->right = child->right->right;
+	    // small fixes left around here
+	    child->left->isred = false;
+	    child->right->isred = false;
+	    child->isred = false;
+	    
+	    return;
 
-      // case 2
+	  }
+
+	  else {
+	    
+	    child->isred = false;
+	    child->right->isred = true;
+	    return;
+	    
+	  }
+
+	  
+	  
+	  
+	}	
+	
+	
+      }
 
     }
-
+      
+  }
     
-
-  }
-  
-
   else {
-
+    
     cout << "no number to delete!" << endl;
-
+    
   }
-
-
+    
 }
