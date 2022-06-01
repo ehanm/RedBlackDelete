@@ -15,7 +15,7 @@ void print(Node* node, int depth);
 bool check(Node* node);
 void fixer(Node* &node, Node* &head);
 void deleter(int num, Node* &child, Node* &parent);
-
+void searcher(int num, Node* node);
 
 int main(){
 
@@ -29,7 +29,7 @@ int main(){
 
   while (stillgoing == true){
     
-    cout << "What would you like to do? (ADD, READ, PRINT, DELETE, QUIT)" << endl;
+    cout << "What would you like to do? (ADD, READ, PRINT, DELETE, SEARCH, QUIT)" << endl;
     
     cin >> input;
 
@@ -93,6 +93,45 @@ int main(){
       break;
 
     }
+
+    if (strcmp(input, "SEARCH") == 0){
+
+      int h;
+      
+      cout << "what number are you looking for?" << endl;
+
+      cin >> h;
+
+      searcher(h, head);
+      
+    }
+
+  }
+
+}
+
+void searcher(int num, Node* node){
+  
+  if (node == NULL){
+
+    cout << "number not found." << endl;
+    return;
+  }
+
+  if (node->data == num){
+
+    cout << "found " << num << "!" << endl;
+    return;
+  }
+  
+  else if (node->data < num){
+
+    searcher(num, node->right);
+    
+  }
+  else if (node->data > num){
+
+    searcher(num, node->left);
 
   }
 
@@ -477,33 +516,57 @@ void deleter(int num, Node* &child, Node* &parent){
 	  child->data = temp->data;
 	  
 	  if (temp->parent->parent == NULL){
-	    child->left = child->left->left;
+	    if (child->left->left != NULL){
+	      child->left = child->left->left;
+	    }
+	    else {
+	      child->parent = NULL;
+	      child->left = NULL;	      
+	    }
+	    
 	    if (child->left != NULL){
 	      child->left->isred = false;
 	      child->left->parent = child;
-	      return;
 	    }	   	    
       	  }
 	  else {
 	    temp->parent->right = NULL;
+	    return;
 	  }
 	  
-	  if (child->left == NULL && child->right->isred == false){
+	  if (child->left == NULL){
 	    if (child->right->right != NULL){
+	      
 	      Node* newnode = new Node();
 
 	      child->left = newnode;
-	    
 	      child->left->data = child->data;
 	      child->left->parent = child;
 	      child->data = child->right->data;
-	      child->left->right = child->right->left;
-	      child->right->left = NULL;
-	      child->right = child->right->right;
 
+	      if (child->right->left != NULL){
+		child->left->right = child->right->left;
+		child->left->right->parent = child->left;
+	      }
+	      
+	      child->right->left = NULL;
+	      if (child->right->right != NULL){
+		child->right = child->right->right;
+	      }
 	      child->left->isred = false;
 	      child->right->isred = false;
-	    
+
+	      if (child->left->right != NULL){
+
+		child->left->right->isred = true;
+
+	      }
+	      if (child->left->left != NULL){
+
+		child->left->left->isred = true;
+
+	      }
+	      
 	      return;
 	    }
 	    else {
@@ -521,7 +584,7 @@ void deleter(int num, Node* &child, Node* &parent){
 	}
 
 	else {
-
+	  
 	  Node* temp;
 	  Node* temp2;
 
@@ -536,6 +599,13 @@ void deleter(int num, Node* &child, Node* &parent){
 	  }
 
 	  child->data = temp->data;
+
+	  if (child->right->right == NULL && child->right->left == NULL){
+
+	    child->right = NULL;
+	    return;
+
+	  }
 	  
 	  if (temp->parent->parent == NULL){
 	    child->right = child->right->right;
